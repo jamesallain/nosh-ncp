@@ -1,4 +1,7 @@
 'use strict';
+const fs = require('fs');
+const path = require('path');
+const { introspectionQuery, printSchema } = require('graphql/utilities');
 
 // Initializes the `graphql` service on path `/graphql`
 // const createService = require('./graphql.class.js');
@@ -43,6 +46,14 @@ const configGraphql = function () {
     schema: executableSchema,
     pubsub: pubsub,
   });
+
+// Save user readable type system shorthand of schema
+  fs.writeFileSync(
+    path.join(__dirname, '../data/schema.graphql'),
+    printSchema(executableSchema)
+  );
+
+
 };
 
 const runSubscriptionServer = function (server) {
@@ -51,6 +62,9 @@ const runSubscriptionServer = function (server) {
     { server: server, path: '/subscriptions' }
   );
 };
+
+
+
 
 module.exports = {
   runSubscriptionServer, configGraphql, pubsub
